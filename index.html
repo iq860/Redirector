@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ar"> 
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirect Page</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+    a.button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .google-play {
+      background-color: #3DDC84;
+    }
+    .app-store {
+      background-color: #0070C9;
+    }
+    .language-selector {
+      margin-bottom: 20px;
+    }
+  </style>
+  <script>
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    var userLang = navigator.language || navigator.languages[0];
+
+    function getMessage(lang) {
+      if (lang.startsWith('en')) { // English check
+        return "Your device is not recognized. Please visit the relevant app store manually:";
+      } else {
+        return "لم يتم التعرف على جهازك. يرجى زيارة متجر التطبيقات المناسب يدويًا:";
+      }
+    }
+
+    function getPlayStoreButton(lang) {
+      var button = document.createElement("a");
+      button.href = "https://play.google.com/store/apps/details?id=com.clue.brillenta&pli=1";
+      if (lang.startsWith('en')) {
+        button.textContent = "Go to Google Play Store";
+      } else {
+        button.textContent = "انتقل إلى متجر جوجل بلاي";
+      }
+      button.className = "button google-play";
+      return button;
+    }
+
+    function getAppStoreButton(lang) {
+      var button = document.createElement("a");
+      button.href = "https://apps.apple.com/us/app/salamet-qalbak/id6474030997";
+      if (lang.startsWith('en')) {
+        button.textContent = "Go to Apple App Store";
+      } else {
+        button.textContent = "انتقل إلى متجر تطبيقات أبل";
+      }
+      button.className = "button app-store";
+      return button;
+    }
+
+    function updateContent(lang) {
+      var message = document.getElementById("message");
+      var googlePlayButton = document.getElementById("googlePlayButton");
+      var appStoreButton = document.getElementById("appStoreButton");
+
+      message.textContent = getMessage(lang);
+      googlePlayButton.textContent = (lang.startsWith('en')) ? "Go to Google Play Store" : "انتقل إلى متجر جوجل بلاي";
+      appStoreButton.textContent = (lang.startsWith('en')) ? "Go to Apple App Store" : "انتقل إلى متجر تطبيقات أبل";
+    }
+
+    function onLanguageChange(event) {
+      var selectedLang = event.target.value;
+      updateContent(selectedLang);
+    }
+
+    if (/android/i.test(userAgent)) {
+      window.location.href = 'https://play.google.com/store/apps/details?id=com.clue.brillenta&pli=1';
+    } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      window.location.href = 'https://apps.apple.com/us/app/salamet-qalbak/id6474030997';
+    } else {
+      // If the OS is not recognized, display buttons for each app store.
+      document.addEventListener("DOMContentLoaded", function() {
+        var languageSelector = document.createElement("select");
+        languageSelector.className = "language-selector";
+        languageSelector.innerHTML = `
+          <option value="en">English</option>
+          <option value="ar">العربية</option>
+        `;
+        languageSelector.addEventListener("change", onLanguageChange);
+        document.body.appendChild(languageSelector);
+
+        var message = document.createElement("p");
+        message.id = "message";
+        message.textContent = getMessage(userLang);
+        document.body.appendChild(message);
+
+        var googlePlayButton = getPlayStoreButton(userLang);
+        googlePlayButton.id = "googlePlayButton";
+        document.body.appendChild(googlePlayButton);
+
+        var appStoreButton = getAppStoreButton(userLang);
+        appStoreButton.id = "appStoreButton";
+        document.body.appendChild(appStoreButton);
+      });
+    }
+  </script>
+</head>
+<body>
+</body>
+</html>
